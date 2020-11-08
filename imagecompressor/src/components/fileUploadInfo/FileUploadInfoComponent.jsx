@@ -1,7 +1,7 @@
 import "./FileUploadInfoComponent.css";
 import React from "react";
 
-class FileUploadInfoCompontent extends React.Component {
+class FileUploadInfoCompontent extends React.PureComponent {
     render() {
         const { hidden, compressedFileLink, fileName, clearValues, error } = this.props;
 
