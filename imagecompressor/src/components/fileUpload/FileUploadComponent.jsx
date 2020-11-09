@@ -11,18 +11,19 @@ class FileUploadCompontent extends React.Component {
             filesLength: 0,
             compressedFileLink: undefined,
             fileName: undefined,
-            error: false
+            error: false,
+            isCompresStarted: false
         }
     }
 
     render() {
-        const { fileInputId, filesLength, compressedFileLink, error, fileName } = this.state;
+        const { fileInputId, filesLength, compressedFileLink, error, fileName, isCompresStarted } = this.state;
 
         return (
             <div>
                 <h1>Upload file</h1>
-                <input type="file" id={fileInputId} multiple={false} onChange={this.onFileUploaded} accept="image/*" />
-                <div>
+                <input type="file" id={fileInputId} multiple={false} onChange={this.onFileUploaded} accept="image/*" hidden={isCompresStarted} />
+                <div hidden={isCompresStarted}>
                     <Button click={this.clearFiles} label="Clear values" hidden={!filesLength} />
                     <Button click={this.compress} label="Compress" hidden={!filesLength} />
                 </div>
@@ -56,7 +57,8 @@ class FileUploadCompontent extends React.Component {
             filesLength: 0,
             originalImage: undefined,
             fileName: undefined,
-            compressedFileLink: undefined
+            compressedFileLink: undefined,
+            isCompresStarted: false
         });
     }
 
@@ -67,6 +69,10 @@ class FileUploadCompontent extends React.Component {
                 error: true
             });
         }
+
+        this.setState({
+            isCompresStarted: true
+        });
 
         const { originalImage } = this.state;
         const options = {
