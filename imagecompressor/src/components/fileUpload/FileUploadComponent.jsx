@@ -1,7 +1,9 @@
 import React from "react";
-import Button from "../common/Button";
+import Button from "../common/button/Button";
 import imageCompression from "browser-image-compression";
 import FileUploadInfoCompontent from "../fileUploadInfo/FileUploadInfoComponent";
+import * as updateImageCompressionHistoryActions from '../../actions/updateImageCompressionHistory';
+import {connect} from "react-redux";
 
 class FileUploadCompontent extends React.Component {
     constructor(props) {
@@ -12,18 +14,18 @@ class FileUploadCompontent extends React.Component {
             compressedFileLink: undefined,
             fileName: undefined,
             error: false,
-            isCompresStarted: false
+            isCompressionStarted: false
         }
     }
 
     render() {
-        const { fileInputId, filesLength, compressedFileLink, error, fileName, isCompresStarted } = this.state;
+        const { fileInputId, filesLength, compressedFileLink, error, fileName, isCompressionStarted } = this.state;
 
         return (
             <div>
                 <h1>Upload file</h1>
-                <input type="file" id={fileInputId} multiple={false} onChange={this.onFileUploaded} accept="image/*" hidden={isCompresStarted} />
-                <div hidden={isCompresStarted}>
+                <input type="file" id={fileInputId} multiple={false} onChange={this.onFileUploaded} accept="image/*" hidden={isCompressionStarted} />
+                <div hidden={isCompressionStarted}>
                     <Button click={this.clearFiles} label="Clear values" hidden={!filesLength} />
                     <Button click={this.compress} label="Compress" hidden={!filesLength} />
                 </div>
@@ -58,7 +60,7 @@ class FileUploadCompontent extends React.Component {
             originalImage: undefined,
             fileName: undefined,
             compressedFileLink: undefined,
-            isCompresStarted: false
+            isCompressionStarted: false
         });
     }
 
@@ -71,7 +73,7 @@ class FileUploadCompontent extends React.Component {
         }
 
         this.setState({
-            isCompresStarted: true
+            isCompressionStarted: true
         });
 
         const { originalImage } = this.state;
@@ -99,6 +101,10 @@ class FileUploadCompontent extends React.Component {
                 compressedFileLink: downloadLink,
                 error: downloadLink ? false : true
             });
+
+            const{ fileName } = this.state;
+            const date = new Date().toLocaleString();
+            this.props.updateImageCompressionHistory(fileName + " Date:" + date + "\n");
         });
     }
 
@@ -113,4 +119,14 @@ class FileUploadCompontent extends React.Component {
     }
 }
 
-export default FileUploadCompontent;
+const mapStateToProps = state =>{
+    return {...state};
+  };
+  
+  const mapDispatchToProps = dispatch =>{
+    return{
+      updateImageCompressionHistory: data => dispatch(updateImageCompressionHistoryActions.updateImageCompressionHistory(data))
+    }
+  };
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(FileUploadCompontent);
