@@ -4,6 +4,7 @@ import imageCompression from "browser-image-compression";
 import FileUploadInfoCompontent from "../fileUploadInfo/FileUploadInfoComponent";
 import * as updateImageCompressionHistoryActions from '../../actions/updateImageCompressionHistory';
 import {connect} from "react-redux";
+import "./FileUploadComponent.css";
 
 class FileUploadCompontent extends React.Component {
     constructor(props) {
@@ -24,7 +25,8 @@ class FileUploadCompontent extends React.Component {
         return (
             <div>
                 <h1>Upload file</h1>
-                <input type="file" id={fileInputId} multiple={false} onChange={this.onFileUploaded} accept="image/*" hidden={isCompressionStarted} />
+                <label htmlFor={fileInputId} hidden={isCompressionStarted}>{fileName ? fileName : "Select Image"}</label>
+                <input placeholder="Choose file" className="fileInput" type="file" id={fileInputId} multiple={false} onChange={this.onFileUploaded} accept="image/*" hidden />
                 <div hidden={isCompressionStarted}>
                     <Button click={this.clearFiles} label="Clear values" hidden={!filesLength} />
                     <Button click={this.compress} label="Compress" hidden={!filesLength} />
@@ -93,10 +95,8 @@ class FileUploadCompontent extends React.Component {
             return;
         }
 
-        let output;
-        imageCompression(originalImage, options).then(x => {
-            output = x;
-            downloadLink = URL.createObjectURL(output);
+        imageCompression(originalImage, options).then(imageCompressionResult => {
+            downloadLink = URL.createObjectURL(imageCompressionResult);
             this.setState({
                 compressedFileLink: downloadLink,
                 error: downloadLink ? false : true
@@ -115,6 +115,7 @@ class FileUploadCompontent extends React.Component {
             alert("Error! Cannot find element in HTML");
             return null;
         }
+        
         return fileInput;
     }
 }
