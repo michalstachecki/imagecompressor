@@ -27,6 +27,7 @@ class ImageCompressionHistoryComponent extends React.Component {
                         );
                     })
                 }
+                <h2 hidden={!shouldHideClearButton}>No recent compressions</h2>
             </div>
         )
     }
