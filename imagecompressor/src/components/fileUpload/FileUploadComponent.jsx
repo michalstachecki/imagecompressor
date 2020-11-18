@@ -3,8 +3,9 @@ import Button from "../common/button/Button";
 import imageCompression from "browser-image-compression";
 import FileUploadInfoCompontent from "../fileUploadInfo/FileUploadInfoComponent";
 import * as updateImageCompressionHistoryActions from '../../actions/updateImageCompressionHistory';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import "./FileUploadComponent.css";
+import PropTypes from "prop-types";
 
 class FileUploadCompontent extends React.Component {
     constructor(props) {
@@ -14,13 +15,13 @@ class FileUploadCompontent extends React.Component {
             filesLength: 0,
             compressedFileLink: undefined,
             fileName: undefined,
-            error: false,
+            compressionFailed: false,
             isCompressionStarted: false
         }
     }
 
     render() {
-        const { fileInputId, filesLength, compressedFileLink, error, fileName, isCompressionStarted } = this.state;
+        const { fileInputId, filesLength, compressedFileLink, compressionFailed, fileName, isCompressionStarted } = this.state;
 
         return (
             <div>
@@ -31,14 +32,14 @@ class FileUploadCompontent extends React.Component {
                     <Button click={this.clearFiles} label="Clear values" hidden={!filesLength} />
                     <Button click={this.compress} label="Compress" hidden={!filesLength} />
                 </div>
-                <FileUploadInfoCompontent hidden={!compressedFileLink} compressedFileLink={compressedFileLink} fileName={fileName} clearValues={this.clearFiles} error={error} />
+                <FileUploadInfoCompontent hidden={!compressedFileLink} compressedFileLink={compressedFileLink} fileName={fileName} clearValues={this.clearFiles} compressionFailed={compressionFailed} />
             </div>
         )
     }
 
     onFileUploaded = () => {
         const fileInput = this.getFileInput();
-        if(!fileInput) {
+        if (!fileInput) {
             return;
         }
 
@@ -70,7 +71,7 @@ class FileUploadCompontent extends React.Component {
         const fileInput = this.getFileInput();
         if (!fileInput) {
             this.setState({
-                error: true
+                compressionFailed: true
             });
         }
 
@@ -90,7 +91,7 @@ class FileUploadCompontent extends React.Component {
         if (options.maxSizeMB >= originalImage.size / 1024) {
             alert("Image is too small and cannot be compressed!");
             this.setState({
-                error: true
+                compressionFailed: true
             })
             return;
         }
@@ -99,10 +100,10 @@ class FileUploadCompontent extends React.Component {
             downloadLink = URL.createObjectURL(imageCompressionResult);
             this.setState({
                 compressedFileLink: downloadLink,
-                error: downloadLink ? false : true
+                compressionFailed: downloadLink ? false : true
             });
 
-            const{ fileName } = this.state;
+            const { fileName } = this.state;
             const date = new Date().toLocaleString();
             this.props.updateImageCompressionHistory(fileName + " Date:" + date + "\n");
         });
@@ -115,19 +116,23 @@ class FileUploadCompontent extends React.Component {
             alert("Error! Cannot find element in HTML");
             return null;
         }
-        
+
         return fileInput;
     }
 }
 
-const mapStateToProps = state =>{
-    return {...state};
-  };
-  
-  const mapDispatchToProps = dispatch =>{
-    return{
-      updateImageCompressionHistory: data => dispatch(updateImageCompressionHistoryActions.updateImageCompressionHistory(data))
+const mapStateToProps = state => {
+    return { ...state };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        updateImageCompressionHistory: data => dispatch(updateImageCompressionHistoryActions.updateImageCompressionHistory(data))
     }
-  };
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(FileUploadCompontent);
+};
+
+FileUploadCompontent.propTypes = {
+    updateImageCompressionHistory: PropTypes.func.isRequired
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FileUploadCompontent);
