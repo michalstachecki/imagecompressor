@@ -11,14 +11,15 @@ class ImageCompressionHistoryComponent extends React.Component {
     }
 
     render() {
-        const imageCompressionHistory = this.parseImageCompressionHistory(this.props.getImageCompressionHistoryStore.imageCompressionHistory);
-        const shouldHideClearButton = !imageCompressionHistory.length;
+        let { imageCompressionHistory } = this.props;
+        let iamgeCompressionHistoryDisplayList = this.parseImageCompressionHistory(imageCompressionHistory);
+        const shouldHideClearButton = !iamgeCompressionHistoryDisplayList.length;
         return (
             <div>
                 <h1>History</h1>
                 <Button click={this.clearImageCompressionHistory} hidden={shouldHideClearButton} label="Clear history"/>
                 {
-                    imageCompressionHistory.map((imageCompressionRow, key) => {
+                    iamgeCompressionHistoryDisplayList.map((imageCompressionRow, key) => {
                         const imageCompressionRowSplitResult = imageCompressionRow.split(" Date:");
                         const linkSplitResult = imageCompressionRowSplitResult[0].split("/");
                         const fileName = linkSplitResult[linkSplitResult.length-1];
@@ -48,7 +49,9 @@ class ImageCompressionHistoryComponent extends React.Component {
 }
 
 const mapStateToProps = state =>{
-    return {...state};
+    return {
+        imageCompressionHistory: state.getImageCompressionHistoryStore.imageCompressionHistory
+    };
   };
   
   const mapDispatchToProps = dispatch =>{
@@ -59,7 +62,8 @@ const mapStateToProps = state =>{
   };
 
   ImageCompressionHistoryComponent.propTypes = {
-    getImageCompressionHistory: PropTypes.func.isRequired
+    getImageCompressionHistory: PropTypes.func.isRequired,
+    imageCompressionHistory: PropTypes.string
   }
   
   export default connect(mapStateToProps, mapDispatchToProps)(ImageCompressionHistoryComponent);
