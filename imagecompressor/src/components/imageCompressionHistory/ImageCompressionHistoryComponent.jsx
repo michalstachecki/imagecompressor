@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import Button from "../common/button/Button";
 import * as getImageCompressionHistoryActions from '../../actions/getImageCompressionHistory';
 import * as clearImageCompressionHistoryActions from '../../actions/clearImageCompressionHistory';
+import PropTypes from "prop-types";
 
 class ImageCompressionHistoryComponent extends React.Component {
     componentDidMount() {
@@ -56,5 +57,9 @@ const mapStateToProps = state =>{
       clearImageCompressionHistory: () => dispatch(clearImageCompressionHistoryActions.clearImageCompressionHistory())
     }
   };
+
+  ImageCompressionHistoryComponent.propTypes = {
+    getImageCompressionHistory: PropTypes.func.isRequired
+  }
   
   export default connect(mapStateToProps, mapDispatchToProps)(ImageCompressionHistoryComponent);
